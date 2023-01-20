@@ -4,21 +4,20 @@
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    <h1 class="display-4">Lista de Ventas</h1>
     
 </div>
 
 <div class="card">
   <div class="card-header">
-    Lista de Ventas
+    Tabla de Ventas
   </div>
   <div class="card-body">
-   <a asp-action="Ventas" asp-controller="Home" asp-route-id="0" class="btn btn-success btn-sm">Nueva Venta</a>
+   <a asp-action="Venta" asp-controller="Home" asp-route-id="0" class="btn btn-success btn-sm">Nueva Venta</a>
    <hr/>
    <table class="table">
        <thead>
            <tr>
-               <th>Id</th>
                <th>Fecha</th>
                <th>Cliente</th>
                <th>Vendedor</th>
@@ -30,7 +29,6 @@
                 @foreach(var item in Model)
                 {
                     <tr>
-                        <td>@item.Id</td>
                         <td>@item.fecha</td>
                         <td>@item.cliente</td>
                         <td>@item.vendedor</td>

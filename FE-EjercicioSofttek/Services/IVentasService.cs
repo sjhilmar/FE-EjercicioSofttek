@@ -7,7 +7,7 @@ namespace FE_EjercicioSofttek.Services
         Task<List<Ventas>> Listar();
         Task<Ventas> Obtener(int id);
         Task<bool> Guardar(Ventas ventas);
-        Task<bool> Editar(Ventas ventas);
+        Task<bool> Editar(Ventas ventas,int id);
         Task<bool> Eliminar(int id);
     }
 }

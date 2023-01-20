@@ -58,7 +58,7 @@ namespace FE_EjercicioSofttek.Services
             var cliente = new HttpClient();
             cliente.BaseAddress = new Uri(_baseUrl);
             cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
-            var response = await cliente.GetAsync("api/Ventas/");
+            var response = await cliente.GetAsync($"api/Ventas/{id}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -89,7 +89,7 @@ namespace FE_EjercicioSofttek.Services
 
             return respuesta;
         }
-        public async Task<bool> Editar(Ventas ventas)
+        public async Task<bool> Editar(Ventas ventas,int id)
         {
             bool respuesta = false;
 
@@ -102,7 +102,7 @@ namespace FE_EjercicioSofttek.Services
 
             var content = new StringContent(JsonConvert.SerializeObject(ventas), Encoding.UTF8, "application/json");
 
-            var response = await cliente.PutAsync("api/Ventas/", content);
+            var response = await cliente.PutAsync($"api/Ventas/{id}", content);
 
             if (response.IsSuccessStatusCode)
             {

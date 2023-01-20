@@ -1,8 +1,53 @@
-﻿
+﻿@model Ventas
 @{
     ViewData["Title"] = "Venta";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Venta</h1>
+<div class="card">
+  <div class="card-header">
+    @ViewBag.Accion
+  </div>
+  <div class="card-body">
+
+      <form asp-action="Guardar" asp-controller="Home" method="post">
+          <input asp-for="Id" type="hidden"/>
+          <div class="mb-2">
+              <label class="form-label">Fecha</label>
+              <input type="text" class="form-control form-control-sm" asp-for="fecha" readonly="true" />
+          </div>
+          <div class="mb-2">
+              <label class="form-label">Cliente</label>
+              <input type="text" class="form-control form-control-sm" asp-for="cliente"/>
+          </div>
+          <div class="mb-2">
+              <label class="form-label">Vendedor</label>
+              <input type="text" class="form-control form-control-sm" asp-for="vendedor"/>
+          </div>
+          <div class="mb-2">
+              <label class="form-label">Producto</label>
+              <input type="text" class="form-control form-control-sm" asp-for="producto"/>
+          </div>
+          <div class="mb-2">
+              <label class="form-label">Cantidad</label>
+              <input type="text" class="form-control form-control-sm" asp-for="cantidad" id="cantidad"/>
+          </div>
+          <div class="mb-2">
+              <label class="form-label">Precio</label>
+              <input type="text" class="form-control form-control-sm" asp-for="precio" id="precio"/>
+          </div>
+          <div class="mb-2">
+              <label class="form-label">Importe</label>
+              <input type="text" class="form-control form-control-sm" asp-for="importe" id="importe"/>
+          </div>
+          <button type="submit" class="btn btn-success btn-sm">Guardar</button>
+
+          <a asp-action="Index" asp-controller="Home" class="btn btn-warning btn-sm">Volver</a>
+      </form>
+
+   
+   <hr/>
+  
+  </div>
+</div>
 

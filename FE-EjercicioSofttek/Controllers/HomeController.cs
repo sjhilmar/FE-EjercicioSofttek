@@ -24,11 +24,12 @@ namespace FE_EjercicioSofttek.Controllers
         {
             Ventas ventas = new Ventas();
             ViewBag.Accion = "Nueva Venta";
-
+            ventas.fecha= DateTime.Now;
             if (id != 0)
             {
                 ventas = await service.Obtener(id);
                 ViewBag.Accion = "Editar Venta";
+                
             }
 
             return View(ventas);
@@ -39,7 +40,7 @@ namespace FE_EjercicioSofttek.Controllers
         {
             bool respuesta;
             if (ventas.Id == 0) respuesta = await service.Guardar(ventas);
-            else respuesta = await service.Editar(ventas);
+            else respuesta = await service.Editar(ventas,ventas.Id);
             if (respuesta) return RedirectToAction("Index");
             else return NoContent();
 
