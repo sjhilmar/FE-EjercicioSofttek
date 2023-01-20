@@ -15,9 +15,9 @@ namespace FE_EjercicioSofttek.Services
         public VentasServiceImpl()
         {
             var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build();
-            _id = Convert.ToInt32(builder.GetSection("ApiSetting:id").Value);
-            _descripcion = builder.GetSection("ApiSetting:descripcion").Value;
-            _baseUrl = builder.GetSection("ApiSetting:baseUrl").Value;
+            _id = Convert.ToInt32(builder.GetSection("ApiSettings:id").Value);
+            _descripcion = builder.GetSection("ApiSettings:descripcion").Value;
+            _baseUrl = builder.GetSection("ApiSettings:baseUrl").Value;
         }
 
         public async Task Autenticar()
@@ -33,6 +33,62 @@ namespace FE_EjercicioSofttek.Services
             _token = resultado.result.ToString();
         }
 
+        public async Task<List<Ventas>> Listar()
+        {
+            List<Ventas> lista = new List<Ventas>();
+            await Autenticar();
+            var cliente = new HttpClient();
+
+            cliente.BaseAddress = new Uri(_baseUrl);
+            cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
+            var response = await cliente.GetAsync("/api/Ventas");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json_respuesta = await response.Content.ReadAsStringAsync();
+                var resultado = JsonConvert.DeserializeObject<List<Ventas>>(json_respuesta);
+                lista = resultado;
+            }
+            return lista;
+
+        }
+        public async Task<Ventas> Obtener(int id)
+        {
+            Ventas venta = new Ventas();
+            var cliente = new HttpClient();
+            cliente.BaseAddress = new Uri(_baseUrl);
+            cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
+            var response = await cliente.GetAsync("api/Ventas/");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json_respuesta = await response.Content.ReadAsStringAsync();
+                var resultado = JsonConvert.DeserializeObject<Ventas>(json_respuesta);
+                venta = resultado;
+            }
+            return venta;
+        }
+        public async Task<bool> Guardar(Ventas ventas)
+        {
+            bool respuesta = false;
+
+            await Autenticar();
+
+            var cliente = new HttpClient();
+            cliente.BaseAddress = new Uri(_baseUrl);
+            cliente.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+
+            var content = new StringContent(JsonConvert.SerializeObject(ventas), Encoding.UTF8, "application/json");
+
+            var response = await cliente.PostAsync("api/Ventas/", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                respuesta = true;
+            }
+
+            return respuesta;
+        }
         public async Task<bool> Editar(Ventas ventas)
         {
             bool respuesta = false;
@@ -76,64 +132,5 @@ namespace FE_EjercicioSofttek.Services
 
             return respuesta;
         }
-
-        public async Task<bool> Guardar(Ventas ventas)
-        {
-            bool respuesta = false;
-
-            await Autenticar();
-
-            var cliente = new HttpClient();
-            cliente.BaseAddress = new Uri(_baseUrl);
-            cliente.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
-
-            var content = new StringContent(JsonConvert.SerializeObject(ventas), Encoding.UTF8, "application/json");
-
-            var response = await cliente.PostAsync("api/Ventas/", content);
-
-            if (response.IsSuccessStatusCode)
-            {
-                respuesta = true;
-            }
-
-            return respuesta;
-        }
-        public async Task<List<Ventas>> Listar()
-        {
-            List<Ventas> lista = new List<Ventas>();
-            await Autenticar();
-            var cliente = new HttpClient();
-
-            cliente.BaseAddress = new Uri(_baseUrl);
-            cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
-            var response = await cliente.GetAsync("/api/Ventas");
-
-            if (response.IsSuccessStatusCode)
-            {
-                var json_respuesta = await response.Content.ReadAsStringAsync();
-                var resultado = JsonConvert.DeserializeObject<Ventas>(json_respuesta);
-                lista.Add(resultado);
-            }
-            return lista;
-
-        }
-
-        public async Task<Ventas> Obtener(int id)
-        {
-            Ventas venta = new Ventas();
-            var cliente = new HttpClient();
-            cliente.BaseAddress=new Uri(_baseUrl);
-            cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer",_token);
-            var response = await cliente.GetAsync("api/Ventas/");
-
-            if (response.IsSuccessStatusCode)
-            {
-                var json_respuesta= await response.Content.ReadAsStringAsync();
-                var resultado = JsonConvert.DeserializeObject<Ventas>(json_respuesta);
-                venta = resultado;
-            }
-            return venta;
-        }
-
     }
 }
