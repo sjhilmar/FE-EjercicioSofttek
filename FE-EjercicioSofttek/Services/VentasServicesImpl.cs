@@ -1,5 +1,6 @@
 ﻿using FE_EjercicioSofttek.Models;
 using Newtonsoft.Json;
+using System.Net.Http.Headers;
 using System.Text;
 
 namespace FE_EjercicioSofttek.Services
@@ -19,7 +20,7 @@ namespace FE_EjercicioSofttek.Services
             _baseUrl = builder.GetSection("ApiSetting:baseUrl").Value;
         }
 
-        public async Task Auntenticar()
+        public async Task Autenticar()
         {
 
             var cliente = new HttpClient();
@@ -32,23 +33,75 @@ namespace FE_EjercicioSofttek.Services
             _token = resultado.result.ToString();
         }
 
-        public Task<bool> Editar(Ventas ventas)
+        public async Task<bool> Editar(Ventas ventas)
         {
-            throw new NotImplementedException();
+            bool respuesta = false;
+
+            await Autenticar();
+
+
+            var cliente = new HttpClient();
+            cliente.BaseAddress = new Uri(_baseUrl);
+            cliente.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+
+            var content = new StringContent(JsonConvert.SerializeObject(ventas), Encoding.UTF8, "application/json");
+
+            var response = await cliente.PutAsync("api/Ventas/", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                respuesta = true;
+            }
+
+            return respuesta;
         }
-        public Task<bool> Eliminar(int id)
+        public async Task<bool> Eliminar(int id)
         {
-            throw new NotImplementedException();
+            bool respuesta = false;
+
+            await Autenticar();
+
+
+            var cliente = new HttpClient();
+            cliente.BaseAddress = new Uri(_baseUrl);
+            cliente.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+
+
+            var response = await cliente.DeleteAsync($"api/Ventas/{id}");
+
+            if (response.IsSuccessStatusCode)
+            {
+                respuesta = true;
+            }
+
+            return respuesta;
         }
 
-        public Task<bool> Guardar(Ventas ventas)
+        public async Task<bool> Guardar(Ventas ventas)
         {
-            throw new NotImplementedException();
+            bool respuesta = false;
+
+            await Autenticar();
+
+            var cliente = new HttpClient();
+            cliente.BaseAddress = new Uri(_baseUrl);
+            cliente.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
+
+            var content = new StringContent(JsonConvert.SerializeObject(ventas), Encoding.UTF8, "application/json");
+
+            var response = await cliente.PostAsync("api/Ventas/", content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                respuesta = true;
+            }
+
+            return respuesta;
         }
         public async Task<List<Ventas>> Listar()
         {
             List<Ventas> lista = new List<Ventas>();
-            await Auntenticar();
+            await Autenticar();
             var cliente = new HttpClient();
 
             cliente.BaseAddress = new Uri(_baseUrl);
@@ -65,19 +118,22 @@ namespace FE_EjercicioSofttek.Services
 
         }
 
-        public Task<Ventas> Obtener(int id)
+        public async Task<Ventas> Obtener(int id)
         {
-            throw new NotImplementedException();
+            Ventas venta = new Ventas();
+            var cliente = new HttpClient();
+            cliente.BaseAddress=new Uri(_baseUrl);
+            cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer",_token);
+            var response = await cliente.GetAsync("api/Ventas/");
+
+            if (response.IsSuccessStatusCode)
+            {
+                var json_respuesta= await response.Content.ReadAsStringAsync();
+                var resultado = JsonConvert.DeserializeObject<Ventas>(json_respuesta);
+                venta = resultado;
+            }
+            return venta;
         }
 
-        Task<List<Ventas>> IVentasService.Listar()
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<Ventas> IVentasService.Obtener(int id)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
