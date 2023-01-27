@@ -24,7 +24,7 @@ namespace FE_EjercicioSofttek.Controllers
         {
             Ventas ventas = new Ventas();
             ViewBag.Accion = "Nueva Venta";
-            ventas.fecha= DateTime.Now;
+            
             if (id != 0)
             {
                 ventas = await service.Obtener(id);

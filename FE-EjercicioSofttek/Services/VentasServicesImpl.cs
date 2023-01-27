@@ -8,7 +8,8 @@ namespace FE_EjercicioSofttek.Services
     public class VentasServiceImpl : IVentasService
     {
         private static int _id;
-        private static string _descripcion;
+        private static string _usuario;
+        private static string _contrasenia;
         private static string _baseUrl;
         private static string _token;
 
@@ -16,7 +17,8 @@ namespace FE_EjercicioSofttek.Services
         {
             var builder = new ConfigurationBuilder().SetBasePath(Directory.GetCurrentDirectory()).AddJsonFile("appsettings.json").Build();
             _id = Convert.ToInt32(builder.GetSection("ApiSettings:id").Value);
-            _descripcion = builder.GetSection("ApiSettings:descripcion").Value;
+            _usuario = builder.GetSection("ApiSettings:usuario").Value;
+            _contrasenia = builder.GetSection("ApiSettings:contrasenia").Value;
             _baseUrl = builder.GetSection("ApiSettings:baseUrl").Value;
         }
 
@@ -25,7 +27,7 @@ namespace FE_EjercicioSofttek.Services
 
             var cliente = new HttpClient();
             cliente.BaseAddress = new Uri(_baseUrl);
-            var credenciales = new AsesorComercial() { descripcion = _descripcion, Id = _id };
+            var credenciales = new Usuario() { usuario = _usuario, Id = _id , contrasenia=_contrasenia};
             var content = new StringContent(JsonConvert.SerializeObject(credenciales), Encoding.UTF8, "application/json");
             var response = await cliente.PostAsync("api/Token", content);
             var json_respuesta = await response.Content.ReadAsStringAsync();
@@ -41,7 +43,7 @@ namespace FE_EjercicioSofttek.Services
 
             cliente.BaseAddress = new Uri(_baseUrl);
             cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
-            var response = await cliente.GetAsync("/api/Ventas");
+            var response = await cliente.GetAsync("/api/Venta");
 
             if (response.IsSuccessStatusCode)
             {
@@ -58,7 +60,7 @@ namespace FE_EjercicioSofttek.Services
             var cliente = new HttpClient();
             cliente.BaseAddress = new Uri(_baseUrl);
             cliente.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _token);
-            var response = await cliente.GetAsync($"api/Ventas/{id}");
+            var response = await cliente.GetAsync($"api/Venta/{id}");
 
             if (response.IsSuccessStatusCode)
             {
@@ -80,7 +82,7 @@ namespace FE_EjercicioSofttek.Services
 
             var content = new StringContent(JsonConvert.SerializeObject(ventas), Encoding.UTF8, "application/json");
 
-            var response = await cliente.PostAsync("api/Ventas/", content);
+            var response = await cliente.PostAsync("api/Venta/", content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -102,7 +104,7 @@ namespace FE_EjercicioSofttek.Services
 
             var content = new StringContent(JsonConvert.SerializeObject(ventas), Encoding.UTF8, "application/json");
 
-            var response = await cliente.PutAsync($"api/Ventas/{id}", content);
+            var response = await cliente.PutAsync($"api/Venta/{id}", content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -123,7 +125,7 @@ namespace FE_EjercicioSofttek.Services
             cliente.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _token);
 
 
-            var response = await cliente.DeleteAsync($"api/Ventas/{id}");
+            var response = await cliente.DeleteAsync($"api/Venta/{id}");
 
             if (response.IsSuccessStatusCode)
             {
